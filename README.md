@@ -4,11 +4,11 @@ SpiDate is a sparetime project to get the current plugin version via spigot.org
 
 If you want to copy the code keep in mind to follow these rules:
 
-**_Do not_ sell the product or any packages of it.
+**_Do not_ sell the product or any packages of it.**
 
-**_Do not_ reditribute it as your own.
+**_Do not_ reditribute it as your own.**
 
-**_Do_ link this repo when you release anything with it.
+**_Do_ link this repo when you release anything with it.**
 
 
 The dependencies can be found in the zip uploaded.
