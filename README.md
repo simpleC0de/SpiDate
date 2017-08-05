@@ -13,5 +13,5 @@ If you want to copy the code keep in mind to follow these rules:
 
 The dependencies can be found in the zip uploaded.
 You'll need to change a few lines for the correct path.
-(These lines: Main:113, Main:162, Main:259, Main:276)
+###### (These lines: Main:113, Main:162, Main:259, Main:276) 
 Those might change in the next releases.
