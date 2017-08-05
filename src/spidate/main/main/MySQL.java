@@ -33,7 +33,6 @@ public class MySQL {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://"+hostname + ":" + port + "/" + database + "?user=" + user + "&password=" + password + "&useUnicode=true&characterEncoding=UTF-8");
             conn = con;
-            //UUID, iTime, ID
 
             for(int i = 1; i < 27; i++){
                 queryUpdate("CREATE TABLE IF NOT EXISTS resource_" + i + " (LINK varchar(255), AUTHOR varchar(255), VERSION varchar(255))");
