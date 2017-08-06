@@ -17,3 +17,6 @@ The dependencies can be found in the zip uploaded. [Click for Download](https://
 You'll need to change a few lines for the correct path.
 ###### (These lines: Main:113, Main:162, Main:259, Main:276) 
 Those might change in the next releases.
+
+
+Webserver for Spidate - [Redirect](https://github.com/simpleC0de/Spidate-Webserver"Spidate Webserver")
