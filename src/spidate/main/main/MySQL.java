@@ -17,11 +17,11 @@ public class MySQL {
     public MySQL()
     {
 
-        hostname = "kry0-productions.lima-db.de";
+        hostname = "";
         port = 3306;
-        database = "db_348308_2";
-        user = "USER348308";
-        password = "hallohallo123";
+        database = "";
+        user = "";
+        password = "";
         openConnection();
 
         for(int i = 1; i < 41; i++){
