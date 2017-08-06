@@ -19,4 +19,4 @@ You'll need to change a few lines for the correct path.
 Those might change in the next releases.
 
 
-Webserver for Spidate - [Redirect](https://github.com/simpleC0de/Spidate-Webserver"Spidate Webserver")
+Webserver for Spidate - [Redirect](https://github.com/simpleC0de/Spidate-Webserver "Spidate Webserver")
