@@ -17,12 +17,27 @@ public class MySQL {
     public MySQL()
     {
 
-        hostname = "";
+        hostname = "kry0-productions.lima-db.de";
         port = 3306;
-        database = "";
-        user = "";
-        password = "";
+        database = "db_348308_2";
+        user = "USER348308";
+        password = "hallohallo123";
         openConnection();
+
+        for(int i = 1; i < 41; i++){
+            queryUpdate("CREATE TABLE IF NOT EXISTS resource_" + i + " (LINK varchar(255), AUTHOR varchar(255), VERSION varchar(255), NAME varchar(255))");
+        }
+
+        queryUpdate("CREATE TABLE IF NOT EXISTS allResources (LINK varchar(255), AUTHOR varchar(255), VERSION varchar(255), ID varchar(32));");
+        queryUpdate("CREATE TABLE IF NOT EXISTS allConns (CONNECTIONS long);");
+
+        queryUpdate("CREATE TABLE IF NOT EXISTS allMembers (ID varchar(255), LINK varchar(255), NAME varchar(255))");
+
+        long outCome = getConnections();
+
+        if(outCome < 0){
+            queryUpdate("INSERT INTO allConns (CONNECTIONS) VALUES (0);");
+        }
 
     }
 
@@ -33,13 +48,6 @@ public class MySQL {
             Class.forName("com.mysql.jdbc.Driver");
             Connection con = DriverManager.getConnection("jdbc:mysql://"+hostname + ":" + port + "/" + database + "?user=" + user + "&password=" + password + "&useUnicode=true&characterEncoding=UTF-8");
             conn = con;
-
-            for(int i = 1; i < 27; i++){
-                queryUpdate("CREATE TABLE IF NOT EXISTS resource_" + i + " (LINK varchar(255), AUTHOR varchar(255), VERSION varchar(255))");
-            }
-
-            queryUpdate("CREATE TABLE IF NOT EXISTS allResources (LINK varchar(255), AUTHOR varchar(255), VERSION varchar(255), ID varchar(32));");
-
 
             return conn;
         } catch (ClassNotFoundException e) {
@@ -52,6 +60,51 @@ public class MySQL {
             ex.printStackTrace();
         }
         return conn;
+    }
+
+
+    public long getConnections(){
+
+        try{
+            if(!getConnection().isValid(2000)){
+                openConnection();
+            }
+
+            Connection conn = getConnection();
+            PreparedStatement st = conn.prepareStatement("SELECT CONNECTIONS FROM allConns");
+            ResultSet rs = st.executeQuery();
+
+            while(rs.next()){
+                return rs.getLong("CONNECTIONS");
+            }
+
+            return -1;
+
+
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return -1;
+        }
+
+    }
+
+    public void updateConnections(){
+        try{
+
+            if(!getConnection().isValid(2000)){
+                openConnection();
+            }
+
+            long start = getConnections();
+            if(start < 0){
+                return;
+            }
+
+            queryUpdate("UPDATE allConns SET CONNECTIONS = CONNECTIONS + 1;");
+
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
     }
 
 
@@ -105,7 +158,7 @@ public class MySQL {
         }
 
     }
-    public  void queryUpdate(final String query)
+    public Thread queryUpdate(final String query)
     {
 
         Thread t = new Thread(){
@@ -142,30 +195,45 @@ public class MySQL {
 
         t.start();
 
+        return t;
+
     }
 
-    public void updateResource(int id, String link, String author, String ver){
+    public Thread truncateId(int id){
+        try{
 
-        Thread t = new Thread(){
-            public void run(){
+            Thread t = queryUpdate("TRUNCATE resource_" + id);
+
+            return t;
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public void updateResource(int id, String link, String author, String ver, String name){
+
+
 
                 try{
 
-                    queryUpdate("TRUNCATE resource_" + id);
 
-                    queryUpdate("INSERT INTO resource_" + id + "(LINK, AUTHOR, VERSION) VALUES('" + link + "', '" + author + "', '" + ver + "');");
+
+                    Thread worker = truncateId(id);
+
+                    if(worker != null){
+                        worker.join();
+                    }
+
+                    queryUpdate("INSERT INTO resource_" + id + "(LINK, AUTHOR, VERSION, NAME) VALUES('" + link + "', '" + author + "', '" + ver + "', '" + name + "');");
 
 
 
                 }catch(Exception ex){
                     ex.printStackTrace();
-                }finally {
-                    this.stop();
                 }
 
-            }
-        };
-        t.start();
+
 
     }
 
@@ -234,6 +302,36 @@ public class MySQL {
         }catch(Exception ex){
             ex.printStackTrace();
             return "";
+        }
+    }
+
+    public void addUser(String id, String link, String name){
+        try{
+            if(!getConnection().isValid(2000)){
+                openConnection();
+            }
+            boolean b;
+
+
+            Connection conn = getConnection();
+            PreparedStatement st = conn.prepareStatement("SELECT * FROM allMembers WHERE ID = '" + id + "';");
+
+            ResultSet rs = st.executeQuery();
+
+            b = rs.next();
+
+            // queryUpdate("SELECT * FROM allResources WHERE LINK = '" + link + "';");
+
+
+
+
+            if(!b){
+                queryUpdate("INSERT INTO allMembers (ID, LINK, NAME) VALUES ('" + id + "', '" + link + "', '" + name + "');");
+            }
+
+
+        }catch(Exception ex){
+            ex.printStackTrace();
         }
     }
 
